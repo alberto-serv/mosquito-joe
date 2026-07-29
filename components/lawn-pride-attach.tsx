@@ -49,16 +49,10 @@ export function LawnPrideAttach({
               <p className="mt-1 text-[11.5px] font-semibold text-mj-slate-soft">Lawn care, same service area</p>
             </div>
           </div>
-          <span className={enabled ? "badge-lp" : "badge-quiet"}>{enabled ? "Added" : "Not added"}</span>
+          {enabled && <span className="badge-lp">Added</span>}
         </div>
 
-        {/* The statement of fact */}
-        <div className="mt-5">
-          <h2 className="text-[21px] font-extrabold tracking-[-0.026em] text-black">Add lawn care services</h2>
-          <p className="mt-1.5 text-[15px] leading-relaxed text-body">
-            Lawn Pride can treat the same {turfSqft.toLocaleString()} sq ft of turf.
-          </p>
-        </div>
+        <h2 className="mt-5 text-[21px] font-extrabold tracking-[-0.026em] text-black">Add lawn care services</h2>
 
         {/* Programs */}
         <fieldset className="mt-6">
