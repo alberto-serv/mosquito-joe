@@ -4,8 +4,7 @@ import { Suspense, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { ArrowUpRight, CreditCard, Loader2, User } from "lucide-react"
-import { YardPlan } from "@/components/yard-plan"
+import { ArrowUpRight, Check, CreditCard, Loader2, User } from "lucide-react"
 import {
   MosquitoJoeMark,
   LawnPrideMark,
@@ -78,37 +77,53 @@ function Confirmation() {
   const [street, ...rest] = rawAddress.split(",")
   const locality = rest.join(",").trim()
 
-  const activeCount = lawnOn ? "Two services are" : "One service is"
+  const activeCount = lawnOn ? "Both services are" : "Your service is"
 
   return (
     <div className="min-h-screen bg-white text-nb-navy">
       <div className="mx-auto max-w-[860px] px-5 py-10 md:py-14">
-        {/* ── Header: one address, one household ─────────────────────── */}
+        {/* ── Header. A title you can read in one pass, then the household
+            it belongs to. Still one address and one household, not an order
+            number, but no longer asking the address to be the headline. */}
         <header>
           <div className="flex items-center gap-2.5">
             <NeighborlyMark size="sm" />
             <span className="text-[13px] font-bold tracking-[-0.01em] text-nb-navy">Neighborly</span>
           </div>
 
-          <h1 className="mt-6 text-[clamp(28px,4.4vw,38px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-nb-navy">
-            {street || "Your household"}
-          </h1>
-          {locality && <p className="mt-1 text-[17px] font-medium text-nb-slate-soft">{locality}</p>}
+          <div className="mt-6 flex items-start gap-3">
+            <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-nb-blue">
+              <Check className="h-[18px] w-[18px] text-white" strokeWidth={3} />
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-[clamp(26px,4vw,36px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-nb-navy">
+                {activeCount} scheduled
+              </h1>
+              <p className="mt-1 text-[15px] text-nb-slate-soft">
+                {customerName ? `${customerName}, we` : "We"} sent a confirmation
+                {email ? ` to ${email}` : ""}.
+              </p>
+            </div>
+          </div>
 
-          <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-nb-slate">
-            {activeCount} active at this household
-            {lawnOn ? ", scheduled on the same visit window" : ""}. Everything below is tied to the address, not to a
-            single order.
-          </p>
+          <div className="mt-6 rounded-xl border border-line bg-nb-navy-soft p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.13em] text-nb-slate-soft">Your household</p>
+            <p className="mt-1.5 text-[19px] font-bold leading-tight tracking-[-0.02em] text-nb-navy">
+              {street || "Your household"}
+            </p>
+            {locality && <p className="text-[15px] text-nb-slate-soft">{locality}</p>}
+            <p className="mt-2 text-[13px] font-semibold text-nb-slate-soft tabular">
+              {sqft.toLocaleString()} sq ft lot, measured
+            </p>
+            <p className="mt-3 max-w-[56ch] text-[13.5px] leading-relaxed text-nb-slate">
+              Everything below is tied to this address, not to a single order. Add or change a service any time and it
+              stays on the same account.
+            </p>
+          </div>
         </header>
 
-        {/* ── The household, drawn ───────────────────────────────────── */}
-        <div className="mx-auto mt-9 max-w-[560px]">
-          <YardPlan sqft={sqft} coverage={lawnOn ? "both" : "mosquito"} turfActive={lawnOn} />
-        </div>
-
         {/* ── Two service cards ──────────────────────────────────────── */}
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           <ServiceCard
             mark={<MosquitoJoeMark size="md" />}
             brand="Mosquito Joe"

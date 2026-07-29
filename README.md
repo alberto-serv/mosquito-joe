@@ -17,14 +17,14 @@ npm run dev
 
 ## The three screens
 
-**`/` — the quote.** Five steps and nothing else: what to treat for, what kind of
-property, how big the lot is, which treatment, and how often. No hero — the first
-thing on the page is the first question.
+**`/` — the quote.** Four steps and nothing else: what to treat for, how big the
+lot is, which treatment type, and how often.
 
 The lot step leads with the slider, capped at 10,000 sq ft. Behind an "I don't
 know my lot size" link sits an address lookup that simulates measuring the lot
-from parcel data; the measured address then rides through to checkout and
-prefills the service address. Over the cap routes to a phone call.
+from parcel data and then reports the price that measurement produced. The
+measured address rides through to checkout and prefills the service address.
+Over the cap routes to a phone call.
 
 **`/checkout` — the climax.** Order summary, the Lawn Pride attach card, first
 visit date and window, contact and address, card entry, then the pay button. The
@@ -37,9 +37,9 @@ household is the shared asset. It is also the one route excluded from the
 Mosquito Joe chrome in `components/site-chrome.tsx`, because an MJ header on top
 would undo exactly that shift.
 
-The header is the address, not an order number. `<YardPlan coverage="both" />`
-is centered as the hero, then two service cards, then a single payment row and a
-single contact row shared by both. It closes on a visually lighter card,
+It opens on a plain title, then a household card carrying the address and the
+measured lot, then two service cards, then a single payment row and a single
+contact row shared by both. It closes on a visually lighter card,
 "Available at this address", carrying Window Genie and Mr. Handyman with real
 starting prices rather than a "learn more" link. Those are proof the address is a
 standing surface for future attach, not a second sales pitch, so they get no
@@ -88,8 +88,7 @@ Two palettes, one typeface. Inter carries both brands; 8px radius throughout.
 - Lawn Pride: green `#12875E` with white text, navy `#1B3554`
 - Neighborly (screen 3 only): navy `#002554`, blue `#3A73B7`, yellow `#FFC845`
 - Window Genie: purple `#500878` · Mr. Handyman: red `#B52126`
-- Barrier accent: amber `#F0A81E` — over-cap and minimum notices, warm enough to
-  sit beside MJ yellow without competing with Lawn Pride's green
+- Barrier accent: amber `#F0A81E` for over-cap and minimum notices
 
 Every brand mark in `public/brand` is the real apple-touch-icon or logo pulled
 from that brand's site. Photography lives in `public/mj`.
@@ -100,7 +99,6 @@ from that brand's site. Photography lives in `public/mj`.
 app/page.tsx                        screen 1, the quote
 app/checkout/page.tsx               screen 2, the checkout
 app/checkout/confirmation/page.tsx  screen 3, the household
-components/yard-plan.tsx            the layered property plan (screen 3 only)
 components/lawn-pride-attach.tsx    the attach card
 components/animated-total.tsx       the counting total
 components/brand-mark.tsx           the two brand marks

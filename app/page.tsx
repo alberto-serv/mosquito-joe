@@ -9,9 +9,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowRight, Check, Loader2, LocateFixed, MapPin, Phone, Shield, Star } from "lucide-react"
 import { MosquitoJoeMark } from "@/components/brand-mark"
+import { AnimatedTotal } from "@/components/animated-total"
 import {
   TARGETS,
-  PROPERTIES,
   TREATMENTS,
   PLANS,
   MOCK_ADDRESSES,
@@ -28,7 +28,6 @@ import {
   quoteMosquito,
   usd,
   type TargetId,
-  type PropertyType,
   type TreatmentId,
   type PlanId,
 } from "@/lib/mosquito-data"
@@ -37,7 +36,6 @@ export default function HomePage() {
   const router = useRouter()
 
   const [target, setTarget] = useState<TargetId>("both")
-  const [property, setProperty] = useState<PropertyType>("residential")
   const [sqft, setSqft] = useState(LOT_DEFAULT)
   const [measuredAddress, setMeasuredAddress] = useState("")
   const [treatment, setTreatment] = useState<TreatmentId>("barrier")
@@ -58,7 +56,6 @@ export default function HomePage() {
     if (overCap) return
     const params = new URLSearchParams({
       target,
-      property,
       sqft: String(sqft),
       treatment,
       plan,
@@ -82,12 +79,11 @@ export default function HomePage() {
             step headers' left edge are the same line all the way down. */}
         <div className="container relative mx-auto px-4 py-16 md:py-20">
           <div className="mx-auto max-w-3xl">
-            <span className="badge-mj-solid">Instant quote</span>
-            <h1 className="mt-4 max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
+            <h1 className="max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
               Get your yard back from mosquitoes, ticks, and fleas
             </h1>
             <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-white/90">
-              Five questions and a real price, with your first treatment booked at checkout. Not sure of your lot size?
+              Four questions and a real price, with your first treatment booked at checkout. Not sure of your lot size?
               We can measure it from your address.
             </p>
             <a href="#step-1" className="btn-yellow mt-7">
@@ -128,7 +124,6 @@ export default function HomePage() {
                     <p className="mt-3.5 text-[16px] font-bold text-black">{t.name}</p>
                     <p className="mt-1 text-[13.5px] leading-snug text-mj-slate-soft">{t.copy}</p>
                     {t.badge && <span className="badge-mj mt-3">{t.badge}</span>}
-                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                   </button>
                 )
               })}
@@ -137,44 +132,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Step 2 — Property type ───────────────────────────────────── */}
+      {/* ── Step 2 — Lot size, with the address lookup behind it ─────── */}
       <section className="border-b border-line bg-muted/40">
         <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-3xl">
-            <StepHeader step={2} title="What kind of property?" />
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {PROPERTIES.map((p) => {
-                const selected = property === p.id
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => setProperty(p.id)}
-                    aria-pressed={selected}
-                    className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3.5 text-left transition-all duration-150 ${
-                      selected ? "border-black bg-white shadow-card" : "border-line bg-white hover:border-line-strong"
-                    }`}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={selected ? p.icon : p.iconGray} alt="" className="h-8 w-8 shrink-0" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-bold text-black">{p.name}</span>
-                      <span className="block text-[12.5px] text-mj-slate-soft">{p.copy}</span>
-                    </span>
-                    {selected && <SelectedTick />}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Step 3 — Lot size, with the address lookup behind it ─────── */}
-      <section className="border-b border-line bg-white">
-        <div className="container mx-auto px-4 py-12 md:py-14">
-          <div className="mx-auto max-w-3xl">
             <StepHeader
-              step={3}
+              step={2}
               title="How big is your lot?"
               subtitle="Drag the slider to your lot size. If you are not sure, we can measure it from your address."
             />
@@ -185,6 +148,7 @@ export default function HomePage() {
                 setMeasuredAddress("")
               }}
               measuredAddress={measuredAddress}
+              perTreatment={quote.perTreatment}
               onMeasured={(addr, area) => {
                 setSqft(area)
                 setMeasuredAddress(addr)
@@ -194,13 +158,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Step 4 — Treatment ───────────────────────────────────────── */}
-      <section className="border-b border-line bg-muted/40">
+      {/* ── Step 3 — Treatment ───────────────────────────────────────── */}
+      <section className="border-b border-line bg-white">
         <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-3xl">
             <StepHeader
-              step={4}
-              title="Which treatment?"
+              step={3}
+              title="Which treatment type should we use?"
               subtitle="Both are applied by the same technician on the same route."
             />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -217,11 +181,10 @@ export default function HomePage() {
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 pr-9">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
                       <p className="text-[16px] font-bold text-black">{t.name}</p>
                       {t.badge && <span className="badge-mj">{t.badge}</span>}
                     </div>
-                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                     <p className="mt-1 text-[13.5px] text-mj-slate-soft">{t.copy}</p>
                     <ul className="mt-3 space-y-1.5">
                       {t.features.map((f) => (
@@ -239,12 +202,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Step 5 — Cadence ─────────────────────────────────────────── */}
-      <section className="border-b border-line bg-white">
+      {/* ── Step 4 — Cadence ─────────────────────────────────────────── */}
+      <section className="border-b border-line bg-muted/40">
         <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-3xl">
             <StepHeader
-              step={5}
+              step={4}
               title="How often should we come out?"
               subtitle={`Treatments run every ${treatmentCfg.intervalDays} days on the ${treatmentCfg.name.toLowerCase()}.`}
             />
@@ -263,11 +226,10 @@ export default function HomePage() {
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 pr-9">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
                       <p className="text-[16px] font-bold text-black">{p.name}</p>
                       {p.badge && <span className="badge-mj">{p.badge}</span>}
                     </div>
-                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                     <p className="mt-1 text-[13.5px] leading-snug text-mj-slate-soft">{p.copy}</p>
                     <p className="mt-3.5 text-[22px] font-extrabold tracking-[-0.02em] text-black tabular">
                       {usd(pq.perTreatment)}
@@ -377,16 +339,6 @@ export default function HomePage() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-// One selection affordance for every step: a black disc with a yellow tick. The
-// border does the heavy lifting, so the accent stays down to a few pixels.
-function SelectedTick({ className = "" }: { className?: string }) {
-  return (
-    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black ${className}`}>
-      <Check className="h-3.5 w-3.5 text-mj-yellow" strokeWidth={3} />
-    </span>
-  )
-}
-
 function StepHeader({ step, title, subtitle }: { step: number; title: string; subtitle?: string }) {
   return (
     <div className="mb-8">
@@ -430,11 +382,14 @@ function LotSizePicker({
   value,
   onChange,
   measuredAddress,
+  perTreatment,
   onMeasured,
 }: {
   value: number
   onChange: (n: number) => void
   measuredAddress: string
+  /** Live price, so a measurement can show what it actually changed. */
+  perTreatment: number
   onMeasured: (address: string, sqft: number) => void
 }) {
   const [lookupOpen, setLookupOpen] = useState(false)
@@ -505,12 +460,24 @@ function LotSizePicker({
           </p>
         </div>
       ) : measuredAddress ? (
-        <div className="mt-7 flex items-start gap-2 rounded-lg border border-mj-green/30 bg-mj-green-soft p-3.5">
-          <Check className="mt-0.5 h-4 w-4 shrink-0 text-mj-green-deep" />
-          <p className="text-[13px] text-body">
-            We measured about <span className="font-bold text-black tabular">{value.toLocaleString()} sq ft</span> at{" "}
-            {measuredAddress}. Adjust the slider if it looks off.
-          </p>
+        <div className="mt-7 rounded-lg border border-mj-green/30 bg-mj-green-soft p-4">
+          <div className="flex items-start gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-mj-green-deep" />
+            <p className="text-[13px] text-body">
+              We measured about <span className="font-bold text-black tabular">{value.toLocaleString()} sq ft</span> at{" "}
+              {measuredAddress}. Adjust the slider if it looks off.
+            </p>
+          </div>
+          <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-mj-green/25 pt-3">
+            <span className="text-[13px] font-semibold text-black">Your price for this lot</span>
+            <span className="flex items-baseline gap-1.5">
+              <AnimatedTotal
+                value={perTreatment}
+                className="text-[22px] font-extrabold leading-none tracking-[-0.02em] text-black"
+              />
+              <span className="text-[12px] font-semibold text-mj-slate-soft">per treatment</span>
+            </span>
+          </div>
         </div>
       ) : lookupOpen ? (
         <AddressMeasurer onMeasured={onMeasured} />
