@@ -443,12 +443,6 @@ function Checkout() {
                 </CheckoutField>
               </div>
 
-              {lawnOn && (
-                <p className="mt-4 rounded-lg bg-lp-select p-3 text-[12.5px] text-lp-green-deep">
-                  One card covers both brands. Mosquito Joe and Lawn Pride bill separately per visit under a single
-                  account.
-                </p>
-              )}
             </section>
 
             {/* ── Pay ───────────────────────────────────────────────── */}

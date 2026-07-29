@@ -73,9 +73,31 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden border-b border-line">
+        <Image src="/mj/hero-family-soccer.webp" alt="" fill priority className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/15" />
+        <div className="container relative mx-auto px-4 py-16 md:py-20">
+          <div className="max-w-2xl">
+            <span className="badge-mj">Instant quote</span>
+            <h1 className="mt-4 max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
+              Get your yard back from mosquitoes, ticks, and fleas
+            </h1>
+            <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-white/90">
+              Five questions and a real price, with your first treatment booked at checkout. Not sure of your lot size?
+              We can measure it from your address.
+            </p>
+            <a href="#step-1" className="btn-yellow mt-7">
+              Start my quote
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── Step 1 — What are we treating for ────────────────────────── */}
-      <section className="border-b border-line bg-white">
-        <div className="container mx-auto px-4 pb-12 pt-10 md:pb-14 md:pt-12">
+      <section id="step-1" className="scroll-mt-20 border-b border-line bg-white">
+        <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-4xl">
             <StepHeader
               step={1}

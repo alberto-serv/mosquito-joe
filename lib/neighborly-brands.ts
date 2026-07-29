@@ -14,6 +14,7 @@ export interface AvailableBrand {
   /** What the price actually buys. */
   priceBasis: string
   startingPrice: number
+  href: string
   /** Why this address in particular. Stated as fact, not as a pitch. */
   note: string
 }
@@ -25,6 +26,7 @@ export const AVAILABLE_BRANDS: AvailableBrand[] = [
     service: "Gutter and window cleaning",
     priceBasis: "per visit",
     startingPrice: 189,
+    href: "https://www.windowgenie.com/",
     note: "Serves this ZIP code",
   },
   {
@@ -33,6 +35,7 @@ export const AVAILABLE_BRANDS: AvailableBrand[] = [
     service: "Home repairs and installs",
     priceBasis: "per hour",
     startingPrice: 129,
+    href: "https://www.mrhandyman.com/",
     note: "Serves this ZIP code",
   },
 ]
