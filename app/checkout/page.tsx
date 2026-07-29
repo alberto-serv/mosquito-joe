@@ -148,7 +148,9 @@ function Checkout() {
   return (
     <div className="min-h-screen bg-muted/40">
       <div className="container mx-auto px-4 py-8 md:py-10">
-        <div className="mx-auto max-w-[600px]">
+        {/* Same 3xl column the estimator ends on, so the order card keeps its
+            width, position, and shape across the handoff. */}
+        <div className="mx-auto max-w-3xl">
           <Link
             href="/"
             className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-ink transition-colors hover:text-mj-slate-soft"
@@ -229,15 +231,6 @@ function Checkout() {
               </div>
             </section>
 
-            {/* ── The attach card ───────────────────────────────────── */}
-            <LawnPrideAttach
-              turfSqft={sqft}
-              enabled={lawnOn}
-              onEnabledChange={setLawnOn}
-              program={lawnProgram}
-              onProgramChange={setLawnProgram}
-            />
-
             {/* ── First visit ───────────────────────────────────────── */}
             <section className="surface p-6 md:p-7" aria-label="First visit">
               <div className="mb-4 flex items-center gap-2">
@@ -311,7 +304,7 @@ function Checkout() {
                           type="button"
                           onClick={() => setVisitWindow(w.id)}
                           className={`rounded-lg border-2 p-3 text-left transition-all ${
-                            selected ? "border-mj-yellow bg-mj-select" : "border-line hover:border-line-strong"
+                            selected ? "border-black bg-white shadow-card" : "border-line hover:border-line-strong"
                           }`}
                         >
                           <p className="text-[13.5px] font-bold text-black">{w.label}</p>
@@ -329,6 +322,16 @@ function Checkout() {
                 </p>
               )}
             </section>
+
+            {/* ── The attach card. Sits after scheduling, so the visit window it
+                shares with Mosquito Joe is already a decision the customer made. */}
+            <LawnPrideAttach
+              turfSqft={sqft}
+              enabled={lawnOn}
+              onEnabledChange={setLawnOn}
+              program={lawnProgram}
+              onProgramChange={setLawnProgram}
+            />
 
             {/* ── Contact and address ───────────────────────────────── */}
             <section className="surface p-6 md:p-7" aria-label="Your information">

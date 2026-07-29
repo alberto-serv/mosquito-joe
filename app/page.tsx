@@ -8,6 +8,7 @@ import * as SliderPrimitive from "@radix-ui/react-slider"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowRight, Check, Loader2, LocateFixed, MapPin, Phone, Shield, Star } from "lucide-react"
+import { MosquitoJoeMark } from "@/components/brand-mark"
 import {
   TARGETS,
   PROPERTIES,
@@ -77,9 +78,11 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-line">
         <Image src="/mj/hero-family-soccer.webp" alt="" fill priority className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/15" />
+        {/* Same 3xl column as every step below, so the hero's left edge and the
+            step headers' left edge are the same line all the way down. */}
         <div className="container relative mx-auto px-4 py-16 md:py-20">
-          <div className="max-w-2xl">
-            <span className="badge-mj">Instant quote</span>
+          <div className="mx-auto max-w-3xl">
+            <span className="badge-mj-solid">Instant quote</span>
             <h1 className="mt-4 max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
               Get your yard back from mosquitoes, ticks, and fleas
             </h1>
@@ -98,7 +101,7 @@ export default function HomePage() {
       {/* ── Step 1 — What are we treating for ────────────────────────── */}
       <section id="step-1" className="scroll-mt-20 border-b border-line bg-white">
         <div className="container mx-auto px-4 py-12 md:py-14">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-3xl">
             <StepHeader
               step={1}
               title="What should we treat for?"
@@ -114,7 +117,7 @@ export default function HomePage() {
                     aria-pressed={selected}
                     className={`relative rounded-xl border-2 p-5 text-left transition-all duration-150 ${
                       selected
-                        ? "border-mj-yellow bg-mj-select shadow-card"
+                        ? "border-black bg-white shadow-card"
                         : "border-line bg-white hover:border-line-strong hover:shadow-card"
                     }`}
                   >
@@ -125,11 +128,7 @@ export default function HomePage() {
                     <p className="mt-3.5 text-[16px] font-bold text-black">{t.name}</p>
                     <p className="mt-1 text-[13.5px] leading-snug text-mj-slate-soft">{t.copy}</p>
                     {t.badge && <span className="badge-mj mt-3">{t.badge}</span>}
-                    {selected && (
-                      <span className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-black">
-                        <Check className="h-3.5 w-3.5 text-mj-yellow" />
-                      </span>
-                    )}
+                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                   </button>
                 )
               })}
@@ -139,7 +138,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Step 2 — Property type ───────────────────────────────────── */}
-      <section className="border-b border-line bg-mj-band-soft">
+      <section className="border-b border-line bg-muted/40">
         <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-3xl">
             <StepHeader step={2} title="What kind of property?" />
@@ -152,15 +151,16 @@ export default function HomePage() {
                     onClick={() => setProperty(p.id)}
                     aria-pressed={selected}
                     className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3.5 text-left transition-all duration-150 ${
-                      selected ? "border-mj-yellow bg-mj-select" : "border-line bg-white hover:border-line-strong"
+                      selected ? "border-black bg-white shadow-card" : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={selected ? p.icon : p.iconGray} alt="" className="h-8 w-8 shrink-0" />
-                    <span>
+                    <span className="min-w-0 flex-1">
                       <span className="block text-[15px] font-bold text-black">{p.name}</span>
                       <span className="block text-[12.5px] text-mj-slate-soft">{p.copy}</span>
                     </span>
+                    {selected && <SelectedTick />}
                   </button>
                 )
               })}
@@ -195,7 +195,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Step 4 — Treatment ───────────────────────────────────────── */}
-      <section className="border-b border-line bg-mj-band-soft">
+      <section className="border-b border-line bg-muted/40">
         <div className="container mx-auto px-4 py-12 md:py-14">
           <div className="mx-auto max-w-3xl">
             <StepHeader
@@ -211,16 +211,17 @@ export default function HomePage() {
                     key={t.id}
                     onClick={() => setTreatment(t.id)}
                     aria-pressed={selected}
-                    className={`rounded-xl border-2 p-5 text-left transition-all duration-150 ${
+                    className={`relative rounded-xl border-2 p-5 text-left transition-all duration-150 ${
                       selected
-                        ? "border-mj-yellow bg-mj-select shadow-card"
+                        ? "border-black bg-white shadow-card"
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 pr-9">
                       <p className="text-[16px] font-bold text-black">{t.name}</p>
-                      {t.badge && <span className="badge-mj shrink-0">{t.badge}</span>}
+                      {t.badge && <span className="badge-mj">{t.badge}</span>}
                     </div>
+                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                     <p className="mt-1 text-[13.5px] text-mj-slate-soft">{t.copy}</p>
                     <ul className="mt-3 space-y-1.5">
                       {t.features.map((f) => (
@@ -241,7 +242,7 @@ export default function HomePage() {
       {/* ── Step 5 — Cadence ─────────────────────────────────────────── */}
       <section className="border-b border-line bg-white">
         <div className="container mx-auto px-4 py-12 md:py-14">
-          <div className="mx-auto max-w-4xl">
+          <div className="mx-auto max-w-3xl">
             <StepHeader
               step={5}
               title="How often should we come out?"
@@ -256,16 +257,17 @@ export default function HomePage() {
                     key={p.id}
                     onClick={() => setPlan(p.id)}
                     aria-pressed={selected}
-                    className={`rounded-xl border-2 p-5 text-left transition-all duration-150 ${
+                    className={`relative rounded-xl border-2 p-5 text-left transition-all duration-150 ${
                       selected
-                        ? "border-mj-yellow bg-mj-select shadow-card"
+                        ? "border-black bg-white shadow-card"
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 pr-9">
                       <p className="text-[16px] font-bold text-black">{p.name}</p>
-                      {p.badge && <span className="badge-mj shrink-0">{p.badge}</span>}
+                      {p.badge && <span className="badge-mj">{p.badge}</span>}
                     </div>
+                    {selected && <SelectedTick className="absolute right-4 top-4" />}
                     <p className="mt-1 text-[13.5px] leading-snug text-mj-slate-soft">{p.copy}</p>
                     <p className="mt-3.5 text-[22px] font-extrabold tracking-[-0.02em] text-black tabular">
                       {usd(pq.perTreatment)}
@@ -281,32 +283,68 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Estimate band ────────────────────────────────────────────── */}
-      <section className="border-b border-line bg-mj-band">
-        <div className="container mx-auto px-4 py-10">
-          <div className="mx-auto flex max-w-4xl flex-col gap-6 rounded-xl border border-line bg-white p-6 shadow-card md:flex-row md:items-center md:justify-between md:p-8">
-            <div>
-              <p className="eyebrow">Your Mosquito Joe estimate</p>
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className="text-[42px] font-extrabold leading-none tracking-[-0.03em] text-black tabular">
-                  {usd(quote.perTreatment)}
-                </span>
-                <span className="text-[15px] font-bold text-mj-slate-soft">per treatment</span>
+      {/* ── Your order ───────────────────────────────────────────────
+          Built as the same card the checkout opens with: same brand mark, same
+          line-item layout, same price column, same 600px column. Crossing into
+          checkout should feel like the card followed you, not like a new page. */}
+      <section className="border-b border-line bg-muted/40">
+        <div className="container mx-auto px-4 py-12 md:py-14">
+          <div className="mx-auto max-w-3xl">
+            <div className="surface p-6 md:p-7">
+              <h2 className="eyebrow mb-4">Your order</h2>
+
+              <div className="flex items-start gap-3">
+                <MosquitoJoeMark size="md" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[14.5px] font-bold text-black">Mosquito Joe</p>
+                  <p className="text-[13px] leading-snug text-mj-slate-soft">
+                    {getTarget(target).name} &middot; {treatmentCfg.name}
+                  </p>
+                  <p className="text-[13px] leading-snug text-mj-slate-soft">
+                    {planCfg.name} &middot; {quote.visits === 1 ? "single visit" : `${quote.visits} treatments`} &middot;
+                    every {quote.intervalDays} days
+                  </p>
+                  <p className="text-[13px] leading-snug text-mj-slate-soft tabular">
+                    {sqft.toLocaleString()} sq ft lot
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-[15px] font-extrabold text-black tabular">{usd(quote.perTreatment)}</p>
+                  <p className="text-[11.5px] font-semibold text-mj-slate-soft">per treatment</p>
+                  {quote.visits > 1 && (
+                    <p className="mt-1 text-[12px] text-mj-slate-soft tabular">{usd(quote.seasonTotal)} season</p>
+                  )}
+                </div>
               </div>
-              <p className="mt-2 text-[13.5px] text-body">
-                {getTarget(target).name} &middot; {treatmentCfg.name} &middot; every {quote.intervalDays} days
-              </p>
-              <p className="text-[13.5px] text-body">
-                {planCfg.name}
-                {quote.visits > 1 ? ` · ${quote.visits} treatments · ${usd(quote.seasonTotal)} for the season` : ""}
-              </p>
-              <p className="mt-1 text-[13.5px] text-body">{sqft.toLocaleString()} sq ft lot</p>
-              {quote.minApplied && <p className="mt-1.5 text-[12px] font-bold text-barrier-deep">Lot minimum applied</p>}
+
+              {quote.minApplied && (
+                <p className="mt-3 text-[12px] font-bold text-barrier-deep">Lot minimum applied</p>
+              )}
+
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="text-[14.5px] font-bold text-black">
+                    {quote.visits === 1 ? "Total" : "Season total"}
+                  </span>
+                  <span className="text-[30px] font-extrabold leading-none tracking-[-0.03em] text-black tabular">
+                    {usd(quote.seasonTotal)}
+                  </span>
+                </div>
+                <p className="mt-3 text-[12px] text-mj-slate-soft">
+                  Billed after each visit. You pick the first date at checkout.
+                </p>
+              </div>
+
+              <button onClick={handleContinue} disabled={overCap} className="btn-yellow mt-6 w-full py-3.5 text-base">
+                Continue to checkout
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              {overCap && (
+                <p className="mt-3 text-center text-[12px] text-mj-slate-soft">
+                  Lots over {LOT_MAX.toLocaleString()} sq ft are quoted by phone.
+                </p>
+              )}
             </div>
-            <button onClick={handleContinue} disabled={overCap} className="btn-yellow shrink-0 text-base">
-              Continue to checkout
-              <ArrowRight className="h-4 w-4" />
-            </button>
           </div>
         </div>
       </section>
@@ -339,6 +377,16 @@ export default function HomePage() {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
+// One selection affordance for every step: a black disc with a yellow tick. The
+// border does the heavy lifting, so the accent stays down to a few pixels.
+function SelectedTick({ className = "" }: { className?: string }) {
+  return (
+    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-black ${className}`}>
+      <Check className="h-3.5 w-3.5 text-mj-yellow" strokeWidth={3} />
+    </span>
+  )
+}
+
 function StepHeader({ step, title, subtitle }: { step: number; title: string; subtitle?: string }) {
   return (
     <div className="mb-8">
@@ -362,9 +410,7 @@ function TrustItem({
 }) {
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <span className="mb-1 flex h-11 w-11 items-center justify-center rounded-lg bg-mj-yellow">
-        <Icon className="h-5 w-5 text-black" />
-      </span>
+      <Icon className="mb-1.5 h-6 w-6 text-black" />
       <p className="text-[15px] font-bold text-black">{title}</p>
       <p className="text-[13px] text-mj-slate-soft">{text}</p>
     </div>

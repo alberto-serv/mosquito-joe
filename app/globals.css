@@ -139,7 +139,14 @@
     @apply inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-mj-yellow text-[15px] font-extrabold text-black;
   }
 
+  /* Yellow is the action colour, so it is spent on buttons and almost nothing
+     else. Emphasis badges take the logo's other half instead: yellow type on
+     black. Same brand, a fraction of the surface area. */
   .badge-mj {
+    @apply inline-block rounded-pill bg-black px-2.5 py-1 text-[10.5px] font-extrabold uppercase tracking-[0.08em] text-mj-yellow;
+  }
+  /* The one place a solid yellow badge still earns its keep: over the hero photo. */
+  .badge-mj-solid {
     @apply inline-block rounded-pill bg-mj-yellow px-2.5 py-1 text-[10.5px] font-extrabold uppercase tracking-[0.08em] text-black;
   }
   .badge-lp {
