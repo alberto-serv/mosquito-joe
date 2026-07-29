@@ -133,6 +133,7 @@ function Confirmation() {
               { label: "Cadence", value: `Every ${treatmentCfg.intervalDays} days` },
             ]}
             price={`${usd(num("perTreatment"))} per treatment`}
+            total={`${usd(num("mjSeasonTotal"))} for the season`}
             accent="#FBE122"
           />
 
@@ -146,10 +147,24 @@ function Confirmation() {
                 { label: "Cadence", value: `${num("lawnApplications", 7)} visits this year` },
               ]}
               price={`${usd(num("lawnPerApplication"))} per application`}
+              total={`${usd(num("lawnSeasonTotal"))} for the season`}
               accent="#12875E"
             />
           )}
         </div>
+
+        {/* ── What the household is spending, across both brands ─────── */}
+        <section className="surface mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 p-5">
+          <div>
+            <p className="text-[14.5px] font-bold text-nb-navy">
+              {lawnOn ? "Total for both services" : "Total for this service"}
+            </p>
+            <p className="text-[12.5px] text-nb-slate-soft">Billed after each visit, nothing upfront</p>
+          </div>
+          <p className="text-[30px] font-extrabold leading-none tracking-[-0.03em] text-nb-navy tabular">
+            {usd(num("seasonTotal"))}
+          </p>
+        </section>
 
         {/* ── Shared by both services ────────────────────────────────── */}
         <section className="surface mt-4 divide-y divide-line" aria-label="Shared account details">
@@ -234,6 +249,7 @@ function ServiceCard({
   plan,
   rows,
   price,
+  total,
   accent,
 }: {
   mark: React.ReactNode
@@ -241,6 +257,8 @@ function ServiceCard({
   plan: string
   rows: Array<{ label: string; value: string }>
   price: string
+  /** What the whole programme costs, not just one visit. */
+  total: string
   /** The only place a brand colour appears on this screen. */
   accent: string
 }) {
@@ -265,7 +283,10 @@ function ServiceCard({
           ))}
         </dl>
 
-        <p className="mt-3 border-t border-line pt-3 text-[13px] font-semibold text-nb-navy tabular">{price}</p>
+        <div className="mt-3 border-t border-line pt-3">
+          <p className="text-[12.5px] text-nb-slate-soft tabular">{price}</p>
+          <p className="mt-0.5 text-[16px] font-extrabold tracking-[-0.02em] text-nb-navy tabular">{total}</p>
+        </div>
       </div>
     </div>
   )

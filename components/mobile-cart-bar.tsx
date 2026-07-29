@@ -16,8 +16,9 @@ import { AnimatedTotal } from "@/components/animated-total"
 interface MobileCartBarProps {
   /** Compact left-hand summary, e.g. "Mosquitoes, Ticks & Fleas · 5,000 sq ft". */
   summary: string
-  perTreatment: number
-  /** Per-visit unit, e.g. "per treatment". */
+  /** The order total, not the per-visit rate: the bar is a cart, not a rate card. */
+  total: number
+  /** What the total covers, e.g. "season total". */
   priceUnit: string
   /** Resolved after mount; null until then, so SSR and client agree. */
   nextSlot: string | null
@@ -28,7 +29,7 @@ interface MobileCartBarProps {
 
 export function MobileCartBar({
   summary,
-  perTreatment,
+  total,
   priceUnit,
   nextSlot,
   overCap,
@@ -47,7 +48,7 @@ export function MobileCartBar({
         <div className="flex items-baseline justify-between gap-3">
           <p className="min-w-0 flex-1 truncate text-[12px] font-medium text-mj-slate-soft">{summary}</p>
           <p className="flex shrink-0 items-baseline gap-1">
-            <AnimatedTotal value={perTreatment} className="text-[16px] font-extrabold leading-none text-black" />
+            <AnimatedTotal value={total} className="text-[16px] font-extrabold leading-none text-black" />
             <span className="text-[11px] font-semibold text-mj-slate-soft">{priceUnit}</span>
           </p>
         </div>

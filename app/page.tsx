@@ -201,10 +201,12 @@ export default function HomePage() {
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
-                      <p className="text-[16px] font-bold text-black">{t.name}</p>
+                    {/* Badge sits on its own reserved row so the title, copy and
+                        feature list line up across every card in the row. */}
+                    <div className="mb-2.5 flex h-[22px] items-center">
                       {t.badge && <span className="badge-mj">{t.badge}</span>}
                     </div>
+                    <p className="text-[16px] font-bold text-black">{t.name}</p>
                     <p className="mt-1 text-[13.5px] text-mj-slate-soft">{t.copy}</p>
                     <ul className="mt-3 space-y-1.5">
                       {t.features.map((f) => (
@@ -240,18 +242,20 @@ export default function HomePage() {
                     key={p.id}
                     onClick={() => setPlan(p.id)}
                     aria-pressed={selected}
-                    className={`relative rounded-xl border-2 p-5 text-left transition-all duration-150 ${
+                    className={`relative flex h-full flex-col rounded-xl border-2 p-5 text-left transition-all duration-150 ${
                       selected
                         ? "border-black bg-white shadow-card"
                         : "border-line bg-white hover:border-line-strong"
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
-                      <p className="text-[16px] font-bold text-black">{p.name}</p>
+                    {/* Badge sits on its own reserved row so the title, copy and
+                        price line up across every card in the row. */}
+                    <div className="mb-2.5 flex h-[22px] items-center">
                       {p.badge && <span className="badge-mj">{p.badge}</span>}
                     </div>
+                    <p className="text-[16px] font-bold text-black">{p.name}</p>
                     <p className="mt-1 text-[13.5px] leading-snug text-mj-slate-soft">{p.copy}</p>
-                    <p className="mt-3.5 text-[22px] font-extrabold tracking-[-0.02em] text-black tabular">
+                    <p className="mt-auto pt-3.5 text-[22px] font-extrabold tracking-[-0.02em] text-black tabular">
                       {usd(pq.perTreatment)}
                     </p>
                     <p className="text-[12.5px] font-semibold text-mj-slate-soft">
@@ -361,8 +365,8 @@ export default function HomePage() {
 
       <MobileCartBar
         summary={`${getTarget(target).shortName} · ${sqft.toLocaleString()} sq ft`}
-        perTreatment={quote.perTreatment}
-        priceUnit="per treatment"
+        total={quote.seasonTotal}
+        priceUnit={quote.visits === 1 ? "total" : "season total"}
         nextSlot={nextSlot}
         overCap={overCap}
         onContinue={handleContinue}
@@ -409,8 +413,27 @@ function TrustItem({
 // for an address — measuring the lot is a service we offer, not a toll gate.
 
 const SLIDER_MAX = LOT_MAX + 500 // the "10,000+" over-cap stop
+const LOT_PIVOT = LOT_DEFAULT // the value that sits at the centre of the track
 const TICKS = [2500, 5000, 7500]
-const tickPct = (v: number) => ((v - LOT_MIN) / (SLIDER_MAX - LOT_MIN)) * 100
+
+// Dual-rate scale. On a linear 1,000 → 10,500 track the 5,000 default lands at
+// 42%, which reads as off-centre on a component whose whole job is to look
+// balanced. So each half of the track carries half the range: 1,000 to 5,000 on
+// the left, 5,000 to 10,500 on the right. Tick marks and labels use the same
+// map, so the scale stays readable even though it is not uniform.
+function lotToPct(v: number): number {
+  const clamped = Math.min(Math.max(v, LOT_MIN), SLIDER_MAX)
+  if (clamped <= LOT_PIVOT) return ((clamped - LOT_MIN) / (LOT_PIVOT - LOT_MIN)) * 50
+  return 50 + ((clamped - LOT_PIVOT) / (SLIDER_MAX - LOT_PIVOT)) * 50
+}
+
+function pctToLot(p: number): number {
+  const raw =
+    p <= 50
+      ? LOT_MIN + (p / 50) * (LOT_PIVOT - LOT_MIN)
+      : LOT_PIVOT + ((p - 50) / 50) * (SLIDER_MAX - LOT_PIVOT)
+  return Math.min(SLIDER_MAX, Math.round(raw / LOT_STEP) * LOT_STEP)
+}
 
 function LotSizePicker({
   value,
@@ -431,8 +454,11 @@ function LotSizePicker({
   const sliderValue = overCap ? SLIDER_MAX : Math.min(Math.max(value || LOT_MIN, LOT_MIN), LOT_MAX)
 
   return (
-    <div>
-      <div className="flex items-baseline justify-center gap-2">
+    <div className="mx-auto max-w-xl">
+      {/* The number is centred on its own line, with the unit beneath it, so the
+          figure itself sits on the centre line rather than the number-plus-unit
+          pair straddling it. */}
+      <div className="text-center">
         <input
           type="text"
           inputMode="numeric"
@@ -445,27 +471,27 @@ function LotSizePicker({
             if (!value || value < LOT_MIN) onChange(LOT_MIN)
           }}
           aria-label="Lot size in square feet"
-          className="w-44 border-b-2 border-line bg-transparent text-center text-[38px] font-extrabold tracking-[-0.03em] text-black tabular transition-colors focus:border-mj-yellow focus:outline-none"
+          className="w-full max-w-[280px] border-b-2 border-line bg-transparent text-center text-[40px] font-extrabold leading-none tracking-[-0.03em] text-black tabular transition-colors focus:border-mj-yellow focus:outline-none"
         />
-        <span className="text-[13px] font-bold text-mj-slate-soft">sq ft lot</span>
+        <p className="mt-2.5 text-[13px] font-bold text-mj-slate-soft">sq ft lot</p>
       </div>
 
       <SliderPrimitive.Root
         className="relative mt-8 flex w-full touch-none select-none items-center"
-        min={LOT_MIN}
-        max={SLIDER_MAX}
-        step={LOT_STEP}
-        value={[sliderValue]}
-        onValueChange={([v]) => onChange(v)}
+        min={0}
+        max={100}
+        step={1}
+        value={[Math.round(lotToPct(sliderValue))]}
+        onValueChange={([p]) => onChange(pctToLot(p))}
         aria-label="Lot size"
       >
         <SliderPrimitive.Track className="relative h-2 w-full grow rounded-pill bg-line">
           <SliderPrimitive.Range className="absolute h-full rounded-pill bg-mj-yellow" />
-          {[...TICKS, LOT_MAX].map((t) => (
+          {TICKS.map((t) => (
             <span
               key={t}
               className="pointer-events-none absolute top-1/2 h-3 w-px -translate-x-1/2 -translate-y-1/2 bg-line-strong"
-              style={{ left: `${tickPct(t)}%` }}
+              style={{ left: `${lotToPct(t)}%` }}
             />
           ))}
         </SliderPrimitive.Track>
@@ -475,7 +501,7 @@ function LotSizePicker({
       <div className="relative mt-3 h-4 text-[11.5px] font-semibold text-mj-slate-soft">
         <span className="absolute left-0">{LOT_MIN.toLocaleString()}</span>
         {TICKS.map((t) => (
-          <span key={t} className="absolute -translate-x-1/2 whitespace-nowrap" style={{ left: `${tickPct(t)}%` }}>
+          <span key={t} className="absolute -translate-x-1/2 whitespace-nowrap" style={{ left: `${lotToPct(t)}%` }}>
             {t.toLocaleString()}
           </span>
         ))}
@@ -516,14 +542,16 @@ function LotSizePicker({
       ) : lookupOpen ? (
         <AddressMeasurer onMeasured={onMeasured} />
       ) : (
-        <button
-          type="button"
-          onClick={() => setLookupOpen(true)}
-          className="mt-7 inline-flex items-center gap-1.5 text-[14px] font-bold text-black underline decoration-mj-yellow decoration-2 underline-offset-4 transition-colors hover:text-mj-slate"
-        >
-          I don&apos;t know my lot size
-          <ArrowRight className="h-4 w-4" />
-        </button>
+        <div className="mt-7 text-center">
+          <button
+            type="button"
+            onClick={() => setLookupOpen(true)}
+            className="inline-flex items-center gap-1.5 text-[14px] font-bold text-black underline decoration-mj-yellow decoration-2 underline-offset-4 transition-colors hover:text-mj-slate"
+          >
+            I don&apos;t know my lot size
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
       )}
     </div>
   )
