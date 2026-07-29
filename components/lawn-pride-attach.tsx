@@ -1,7 +1,6 @@
 "use client"
 
 import { Switch } from "@/components/ui/switch"
-import { YardPlan } from "@/components/yard-plan"
 import { LawnPrideMark, LawnPrideWordmark } from "@/components/brand-mark"
 import { AnimatedTotal } from "@/components/animated-total"
 import { LAWN_PROGRAMS, quoteLawn, type LawnProgramId } from "@/lib/lawn-pride"
@@ -10,11 +9,10 @@ import { Check } from "lucide-react"
 
 // ─── The attach card ─────────────────────────────────────────────────────────
 //
-// Sits between the order summary and the payment fields. It is built on the same
-// `.surface` as the order above it, at the same padding and the same type scale,
-// because it is not an ad — it is a second line item the customer has not
-// accepted yet. The only thing that separates it visually is the state of the
-// turf layer in the plan.
+// Sits directly under the order summary. It is built on the same `.surface` as
+// the order above it, at the same padding and the same type scale, because it is
+// not an ad — it is a second line item the customer has not accepted yet. The
+// only thing that separates it visually is whether it has been accepted.
 
 interface LawnPrideAttachProps {
   turfSqft: number
@@ -63,11 +61,6 @@ export function LawnPrideAttach({
           <p className="mt-1.5 text-[15px] leading-relaxed text-body">
             Lawn Pride can treat the same {turfSqft.toLocaleString()} sq ft of turf.
           </p>
-        </div>
-
-        {/* The plan, carrying both layers */}
-        <div className="mt-5">
-          <YardPlan sqft={turfSqft} coverage="both" turfActive={enabled} />
         </div>
 
         {/* Programs */}

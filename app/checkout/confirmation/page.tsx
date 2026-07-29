@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { CalendarDays, Check, Clock, CreditCard, Loader2, MapPin } from "lucide-react"
 import { MosquitoJoeMark, LawnPrideMark } from "@/components/brand-mark"
-import { YardPlan } from "@/components/yard-plan"
 import { getLawnProgram, type LawnProgramId } from "@/lib/lawn-pride"
 import {
   getPlan,
@@ -17,7 +16,7 @@ import {
   isTreatmentId,
   formatVisitDate,
   usd,
-  YARD_DEFAULT,
+  LOT_DEFAULT,
   type PlanId,
   type TargetId,
   type TreatmentId,
@@ -46,7 +45,7 @@ function Confirmation() {
     ? (params.get("treatment") as TreatmentId)
     : "barrier"
   const plan: PlanId = isPlanId(params.get("plan")) ? (params.get("plan") as PlanId) : "season"
-  const sqft = num("sqft", YARD_DEFAULT)
+  const sqft = num("sqft", LOT_DEFAULT)
 
   const lawnOn = params.get("lawn") === "1"
   const lawnProgram = getLawnProgram((params.get("lawnProgram") || "enhanced") as LawnProgramId)
@@ -93,6 +92,7 @@ function Confirmation() {
                     <p className="text-[13px] text-mj-slate-soft">
                       {getTarget(target).name} &middot; {getTreatment(treatment).name} &middot; {getPlan(plan).name}
                     </p>
+                    <p className="text-[13px] text-mj-slate-soft tabular">{sqft.toLocaleString()} sq ft lot</p>
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-[15px] font-extrabold text-black tabular">{usd(num("perTreatment"))}</p>
@@ -129,12 +129,7 @@ function Confirmation() {
               </p>
             </div>
 
-            <div className="p-6 md:p-7">
-              <h2 className="eyebrow mb-4">Your yard</h2>
-              <YardPlan sqft={sqft} coverage={lawnOn ? "both" : "mosquito"} turfActive={lawnOn} />
-            </div>
-
-            <div className="border-t border-line bg-muted p-6 md:p-7">
+            <div className="bg-muted p-6 md:p-7">
               <h2 className="eyebrow mb-3">First visit</h2>
               <div className="space-y-2 text-[13.5px] text-body">
                 {visitDate && (

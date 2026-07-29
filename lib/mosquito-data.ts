@@ -1,8 +1,11 @@
 // ─── Mosquito Joe quote model ────────────────────────────────────────────────
 //
-// The estimator walks a homeowner through five decisions — what to treat, where,
-// how much yard, which treatment, and how often — and turns them into a per-visit
-// price and a season total. Every number below is PLACEHOLDER DEMO PRICING.
+// The estimator walks a homeowner through five decisions — what to treat, what
+// kind of property, how big the lot is, which treatment, and how often — and
+// turns them into a per-visit price and a season total. Contact details and
+// scheduling are collected at checkout, not here.
+//
+// Every number below is PLACEHOLDER DEMO PRICING.
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -91,15 +94,15 @@ export function isPropertyType(v: string | null | undefined): v is PropertyType 
   return v === "residential" || v === "commercial"
 }
 
-// ─── Treatable area ──────────────────────────────────────────────────────────
+// ─── Lot size ────────────────────────────────────────────────────────────────
 //
-// The homeowner dials in the treatable area of the property — turf plus the beds,
-// wood lines, and perimeter we spray. Anything over the cap is a custom program.
+// The homeowner dials in the treatable lot — turf plus the beds, wood lines, and
+// perimeter we spray. Anything over the cap is a custom program routed to a call.
 
-export const YARD_MIN = 1000
-export const YARD_MAX = 20000
-export const YARD_STEP = 100
-export const YARD_DEFAULT = 4200
+export const LOT_MIN = 1000
+export const LOT_MAX = 10000
+export const LOT_STEP = 100
+export const LOT_DEFAULT = 4200
 
 // ─── Treatment type ──────────────────────────────────────────────────────────
 
@@ -228,11 +231,12 @@ export function quoteMosquito(
   }
 }
 
-// ─── Address → yard measurement (simulated) ──────────────────────────────────
+// ─── Address → lot measurement (simulated) ───────────────────────────────────
 //
 // "Your yard is already measured" is the whole premise of the attach card, so the
-// estimator measures it up front. The lookup is faked: we derive a stable,
-// plausible treatable area from the address text and snap it to the slider step.
+// estimator offers to measure the lot for anyone who does not know it. The lookup
+// is faked: we derive a stable, plausible lot size from the address text and snap
+// it to the slider step.
 
 export const MOCK_ADDRESSES = [
   "1420 Magnolia Ridge Ct, Cary, NC 27519",
@@ -245,14 +249,14 @@ export const MOCK_ADDRESSES = [
 /** The demo address every "use my location" and default flow lands on. */
 export const DEMO_ADDRESS = MOCK_ADDRESSES[0]
 
-export function measureYardFromAddress(address: string): number {
-  // The demo address is pinned to the yard the attach-card copy quotes.
-  if (address.trim().toLowerCase() === DEMO_ADDRESS.toLowerCase()) return YARD_DEFAULT
+export function measureLotFromAddress(address: string): number {
+  // The demo address is pinned to the lot size the attach-card copy quotes.
+  if (address.trim().toLowerCase() === DEMO_ADDRESS.toLowerCase()) return LOT_DEFAULT
   let hash = 0
   for (let i = 0; i < address.length; i++) hash = (hash * 31 + address.charCodeAt(i)) >>> 0
   const span = 9000 - 2500
   const raw = 2500 + (hash % (span + 1))
-  return Math.round(raw / YARD_STEP) * YARD_STEP
+  return Math.round(raw / LOT_STEP) * LOT_STEP
 }
 
 // ─── Scheduling ──────────────────────────────────────────────────────────────
