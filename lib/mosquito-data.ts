@@ -1,15 +1,14 @@
 // ─── Mosquito Joe quote model ────────────────────────────────────────────────
 //
-// The estimator walks a homeowner through five decisions — what to treat, what
-// kind of property, how big the lot is, which treatment, and how often — and
-// turns them into a per-visit price and a season total. Contact details and
-// scheduling are collected at checkout, not here.
+// The estimator walks a homeowner through four decisions: what to treat, how big
+// the lot is, which treatment type, and how often. Those turn into a per-visit
+// price and a season total. Contact details and scheduling are collected at
+// checkout, not here.
 //
 // Every number below is PLACEHOLDER DEMO PRICING.
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type PropertyType = "residential" | "commercial"
 export type TargetId = "mosquitoes" | "ticks-fleas" | "both"
 export type TreatmentId = "barrier" | "natural"
 export type PlanId = "season" | "monthly" | "one-time"
@@ -63,37 +62,6 @@ export function isTargetId(v: string | null | undefined): v is TargetId {
   return !!v && TARGETS.some((t) => t.id === v)
 }
 
-// ─── Property type ───────────────────────────────────────────────────────────
-
-export interface Property {
-  id: PropertyType
-  name: string
-  copy: string
-  icon: string
-  iconGray: string
-}
-
-export const PROPERTIES: Property[] = [
-  {
-    id: "residential",
-    name: "Residential",
-    copy: "A home, yard, and outdoor living space.",
-    icon: "/mj/icon-residential.svg",
-    iconGray: "/mj/icon-residential-gray.svg",
-  },
-  {
-    id: "commercial",
-    name: "Commercial",
-    copy: "A business, campus, venue, or common area.",
-    icon: "/mj/icon-commercial.svg",
-    iconGray: "/mj/icon-commercial-gray.svg",
-  },
-]
-
-export function isPropertyType(v: string | null | undefined): v is PropertyType {
-  return v === "residential" || v === "commercial"
-}
-
 // ─── Lot size ────────────────────────────────────────────────────────────────
 //
 // The homeowner dials in the treatable lot — turf plus the beds, wood lines, and
@@ -102,7 +70,7 @@ export function isPropertyType(v: string | null | undefined): v is PropertyType 
 export const LOT_MIN = 1000
 export const LOT_MAX = 10000
 export const LOT_STEP = 100
-export const LOT_DEFAULT = 4200
+export const LOT_DEFAULT = 5000
 
 // ─── Treatment type ──────────────────────────────────────────────────────────
 
@@ -193,9 +161,9 @@ export function isPlanId(v: string | null | undefined): v is PlanId {
 // ─── Pricing ─────────────────────────────────────────────────────────────────
 //
 // PLACEHOLDER DEMO PRICING
-//   per treatment = max($89, treatable sq ft × $0.022)
+//   per treatment = max($89, lot sq ft × $0.022)
 //                   × target multiplier × treatment multiplier × plan multiplier
-// A 4,200 sq ft yard on the standard barrier program lands at $92 per treatment.
+// The default 5,000 sq ft lot on the default selections lands at $138.
 
 export const MJ_RATE_PER_SQFT = 0.022
 export const MJ_MIN_PER_TREATMENT = 89
@@ -249,9 +217,12 @@ export const MOCK_ADDRESSES = [
 /** The demo address every "use my location" and default flow lands on. */
 export const DEMO_ADDRESS = MOCK_ADDRESSES[0]
 
+/** The demo address measures to something other than the slider default, so the
+ *  lookup visibly moves both the area and the price it feeds. */
+export const DEMO_MEASURED_SQFT = 4200
+
 export function measureLotFromAddress(address: string): number {
-  // The demo address is pinned to the lot size the attach-card copy quotes.
-  if (address.trim().toLowerCase() === DEMO_ADDRESS.toLowerCase()) return LOT_DEFAULT
+  if (address.trim().toLowerCase() === DEMO_ADDRESS.toLowerCase()) return DEMO_MEASURED_SQFT
   let hash = 0
   for (let i = 0; i < address.length; i++) hash = (hash * 31 + address.charCodeAt(i)) >>> 0
   const span = 9000 - 2500
@@ -300,4 +271,34 @@ export function formatVisitDateShort(d: Date) {
 
 export function usd(n: number): string {
   return `$${Math.round(n).toLocaleString("en-US")}`
+}
+
+// ─── Next available appointment ──────────────────────────────────────────────
+//
+// Powers the "Next: ..." half of the primary CTA. Time-dependent, so callers
+// must resolve it after mount rather than during render, or SSR and the client
+// will disagree on what "today" means.
+
+export interface NextSlot {
+  label: string
+}
+
+export function nextAvailableSlot(now = new Date()): NextSlot {
+  const day = now.getDay()
+  const isWeekday = day !== 0 && day !== 6
+
+  // A late-afternoon slot still open today.
+  if (isWeekday && now.getHours() < 15) return { label: "Today 4:30 PM" }
+
+  const cursor = new Date(now)
+  cursor.setDate(cursor.getDate() + 1)
+  while (cursor.getDay() === 0 || cursor.getDay() === 6) cursor.setDate(cursor.getDate() + 1)
+
+  const tomorrow = new Date(now)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const isTomorrow = isSameDay(cursor, tomorrow)
+
+  return {
+    label: `${isTomorrow ? "Tomorrow" : cursor.toLocaleDateString("en-US", { weekday: "short" })} 8:00 AM`,
+  }
 }

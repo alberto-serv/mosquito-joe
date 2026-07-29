@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowRight, Check, Loader2, LocateFixed, MapPin, Phone, Shield, Star } from "lucide-react"
 import { MosquitoJoeMark } from "@/components/brand-mark"
+import { MobileCartBar } from "@/components/mobile-cart-bar"
 import { AnimatedTotal } from "@/components/animated-total"
 import {
   TARGETS,
@@ -25,6 +26,7 @@ import {
   getPlan,
   isTargetId,
   measureLotFromAddress,
+  nextAvailableSlot,
   quoteMosquito,
   usd,
   type TargetId,
@@ -41,10 +43,15 @@ export default function HomePage() {
   const [treatment, setTreatment] = useState<TreatmentId>("barrier")
   const [plan, setPlan] = useState<PlanId>("season")
 
+  // Next availability is clock-dependent, so it resolves after mount. Rendering
+  // it during SSR would hand the client a different "today" than the server.
+  const [nextSlot, setNextSlot] = useState<string | null>(null)
+
   // Deep links from campaign pages can preselect what we're treating for.
   useEffect(() => {
     const t = new URLSearchParams(window.location.search).get("target")
     if (isTargetId(t)) setTarget(t)
+    setNextSlot(nextAvailableSlot().label)
   }, [])
 
   const quote = useMemo(() => quoteMosquito(sqft, target, treatment, plan), [sqft, target, treatment, plan])
@@ -70,7 +77,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-[104px] md:pb-0">
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-line">
         <Image src="/mj/hero-family-soccer.webp" alt="" fill priority className="object-cover object-center" />
@@ -86,7 +93,8 @@ export default function HomePage() {
               Four questions and a real price, with your first treatment booked at checkout. Not sure of your lot size?
               We can measure it from your address.
             </p>
-            <a href="#step-1" className="btn-yellow mt-7">
+            {/* Desktop only. On mobile the sticky cart bar is the sole CTA. */}
+            <a href="#step-1" className="btn-yellow mt-7 hidden md:inline-flex">
               Start my quote
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -297,8 +305,13 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <button onClick={handleContinue} disabled={overCap} className="btn-yellow mt-6 w-full py-3.5 text-base">
-                Continue to checkout
+              <button
+                onClick={handleContinue}
+                disabled={overCap}
+                className="btn-yellow mt-6 hidden w-full py-3.5 text-base md:inline-flex"
+              >
+                <span>See available times</span>
+                {nextSlot && <span className="font-semibold opacity-70">&middot; Next: {nextSlot}</span>}
                 <ArrowRight className="h-4 w-4" />
               </button>
               {overCap && (
@@ -333,6 +346,15 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <MobileCartBar
+        summary={`${getTarget(target).shortName} · ${sqft.toLocaleString()} sq ft`}
+        perTreatment={quote.perTreatment}
+        priceUnit="per treatment"
+        nextSlot={nextSlot}
+        overCap={overCap}
+        onContinue={handleContinue}
+      />
     </div>
   )
 }
@@ -398,7 +420,7 @@ function LotSizePicker({
 
   return (
     <div>
-      <div className="flex items-baseline gap-2">
+      <div className="flex items-baseline justify-center gap-2">
         <input
           type="text"
           inputMode="numeric"
@@ -411,7 +433,7 @@ function LotSizePicker({
             if (!value || value < LOT_MIN) onChange(LOT_MIN)
           }}
           aria-label="Lot size in square feet"
-          className="w-44 border-b-2 border-line bg-transparent text-[38px] font-extrabold tracking-[-0.03em] text-black tabular transition-colors focus:border-mj-yellow focus:outline-none"
+          className="w-44 border-b-2 border-line bg-transparent text-center text-[38px] font-extrabold tracking-[-0.03em] text-black tabular transition-colors focus:border-mj-yellow focus:outline-none"
         />
         <span className="text-[13px] font-bold text-mj-slate-soft">sq ft lot</span>
       </div>

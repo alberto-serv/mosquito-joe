@@ -20,7 +20,7 @@ npm run dev
 **`/` — the quote.** Four steps and nothing else: what to treat for, how big the
 lot is, which treatment type, and how often.
 
-The lot step leads with the slider, capped at 10,000 sq ft. Behind an "I don't
+The lot step opens at 5,000 sq ft and is capped at 10,000. Behind an "I don't
 know my lot size" link sits an address lookup that simulates measuring the lot
 from parcel data and then reports the price that measurement produced. The
 measured address rides through to checkout and prefills the service address.
@@ -44,6 +44,13 @@ contact row shared by both. It closes on a visually lighter card,
 starting prices rather than a "learn more" link. Those are proof the address is a
 standing surface for future attach, not a second sales pitch, so they get no
 shadow, no fill, and no call to action.
+
+On mobile the estimator carries a sticky two-line cart bar instead of inline
+buttons: the live cart on top, "See available times · Next: ..." beneath. It is
+present from page load rather than scroll-revealed, so the price is visible from
+the first second and the CTA is reachable at any scroll depth. The hero and
+order-card buttons are desktop-only, so there is exactly one CTA on mobile. The
+bar runs about 82px, and the page carries matching bottom padding.
 
 `/contact` handles anything that needs a person.
 
@@ -77,8 +84,8 @@ per application = max($49, turf sq ft × $0.011) × program multiplier
 Billed per application, 7 applications per season.
 ```
 
-A 4,200 sq ft lot lands at $115 per Mosquito Joe treatment on the default
-selection, and $63 per Lawn Pride application on the Enhanced program.
+The default 5,000 sq ft lot lands at $138 per Mosquito Joe treatment, and $70
+per Lawn Pride application on the Enhanced program.
 
 ## Brand
 
@@ -100,6 +107,7 @@ app/page.tsx                        screen 1, the quote
 app/checkout/page.tsx               screen 2, the checkout
 app/checkout/confirmation/page.tsx  screen 3, the household
 components/lawn-pride-attach.tsx    the attach card
+components/mobile-cart-bar.tsx      mobile's only CTA, live-bound to the cart
 components/animated-total.tsx       the counting total
 components/brand-mark.tsx           the two brand marks
 lib/mosquito-data.ts                quote model and pricing
