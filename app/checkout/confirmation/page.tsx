@@ -4,7 +4,7 @@ import { Suspense, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { ArrowUpRight, Check, CreditCard, Loader2, User } from "lucide-react"
+import { Check, CreditCard, Loader2, User } from "lucide-react"
 import {
   MosquitoJoeMark,
   LawnPrideMark,
@@ -199,10 +199,7 @@ function Confirmation() {
               >
                 {b.id === "window-genie" ? <WindowGenieMark size="sm" /> : <MrHandymanMark size="sm" />}
                 <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1.5 text-[14px] font-semibold text-nb-navy group-hover:underline">
-                    {b.name}
-                    <ArrowUpRight className="h-3.5 w-3.5 text-nb-slate-soft transition-colors group-hover:text-nb-blue" />
-                  </p>
+                  <p className="text-[14px] font-semibold text-nb-navy group-hover:underline">{b.name}</p>
                   <p className="text-[12.5px] text-nb-slate-soft">{b.service}</p>
                 </div>
                 <div className="shrink-0 text-right">

@@ -4,7 +4,6 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import {
-  ArrowLeft,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
@@ -153,9 +152,8 @@ function Checkout() {
         <div className="mx-auto max-w-3xl">
           <Link
             href="/"
-            className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-ink transition-colors hover:text-mj-slate-soft"
+            className="mb-5 inline-flex items-center text-[13.5px] font-bold text-ink transition-colors hover:text-mj-slate-soft"
           >
-            <ArrowLeft className="h-4 w-4" />
             Back to your quote
           </Link>
 

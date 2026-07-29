@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, Check, Mail, Phone } from "lucide-react"
+import { Check, Mail, Phone } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -24,9 +24,8 @@ export default function ContactPage() {
         <div className="mx-auto max-w-[600px]">
           <Link
             href="/"
-            className="mb-5 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-ink transition-colors hover:text-mj-slate-soft"
+            className="mb-5 inline-flex items-center text-[13.5px] font-bold text-ink transition-colors hover:text-mj-slate-soft"
           >
-            <ArrowLeft className="h-4 w-4" />
             Back to your quote
           </Link>
 

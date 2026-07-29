@@ -7,7 +7,7 @@ import Image from "next/image"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowRight, Check, Loader2, LocateFixed, MapPin, Phone, Shield, Star } from "lucide-react"
+import { Check, Loader2, LocateFixed, MapPin, Phone, Shield, Star } from "lucide-react"
 import { MosquitoJoeMark } from "@/components/brand-mark"
 import { MobileCartBar } from "@/components/mobile-cart-bar"
 import { AnimatedTotal } from "@/components/animated-total"
@@ -80,8 +80,10 @@ export default function HomePage() {
     <div className="min-h-screen bg-background pb-[104px] md:pb-0">
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-line">
-        {/* The photo is busy and bright, so it gets treated rather than just
-            covered: darkened and softly defocused, then a gradient scrim on top.
+        {/* The photo is busy, so it is softly defocused rather than heavily
+            darkened: the blur is what makes white type readable over grass and
+            foliage, so the image can stay bright. The scrim is left-weighted and
+            fades out entirely, keeping the scene visible on the right.
             scale-105 hides the blur's soft edge at the crop boundary. */}
         <Image
           src="/mj/hero-family-soccer.webp"
@@ -89,17 +91,20 @@ export default function HomePage() {
           fill
           priority
           className="scale-105 object-cover object-center"
-          style={{ filter: "brightness(0.74) saturate(1.1) blur(2px)" }}
+          style={{ filter: "brightness(0.92) saturate(1.06) blur(2px)" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/52 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/34 to-transparent" />
         {/* Same 3xl column as every step below, so the hero's left edge and the
             step headers' left edge are the same line all the way down. */}
         <div className="container relative mx-auto px-4 py-16 md:py-20">
           <div className="mx-auto max-w-3xl">
-            <h1 className="max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
+            <h1
+              className="max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white"
+              style={{ textShadow: "0 2px 18px rgba(0,0,0,.45)" }}
+            >
               Get your yard back from mosquitoes, ticks, and fleas
             </h1>
-            <p className="mt-4 text-[17px] leading-relaxed text-white/90">
+            <p className="mt-4 text-[17px] leading-relaxed text-white" style={{ textShadow: "0 1px 12px rgba(0,0,0,.5)" }}>
               Four questions, a real price, and your first visit booked.
             </p>
             {/* Desktop only. On mobile the sticky cart bar is the sole CTA.
@@ -108,7 +113,6 @@ export default function HomePage() {
             <a href="#step-1" className="btn-yellow mt-7 hidden md:inline-flex">
               <span>Book my visit</span>
               {nextSlot && <span className="font-semibold opacity-70">&middot; Next: {nextSlot}</span>}
-              <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -328,7 +332,6 @@ export default function HomePage() {
               >
                 <span>Book my visit</span>
                 {nextSlot && <span className="font-semibold opacity-70">&middot; Next: {nextSlot}</span>}
-                <ArrowRight className="h-4 w-4" />
               </button>
               {overCap && (
                 <p className="mt-3 text-center text-[12px] text-mj-slate-soft">
@@ -549,7 +552,6 @@ function LotSizePicker({
             className="inline-flex items-center gap-1.5 text-[14px] font-bold text-black underline decoration-mj-yellow decoration-2 underline-offset-4 transition-colors hover:text-mj-slate"
           >
             I don&apos;t know my lot size
-            <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       )}
