@@ -59,15 +59,14 @@ export function MobileCartBar({
             Call for a custom quote
           </a>
         ) : (
-          /* The label must shrink rather than push: at 375px an unwrapped
-             "See available times · Next: Tomorrow 8:00 AM" is wider than the
-             viewport, and a button that overflows drags the page with it. */
+          /* The label shrinks rather than pushes, so a long slot string can
+             never widen the bar past the viewport. */
           <button
             type="button"
             onClick={onContinue}
             className="btn-yellow mt-2 w-full gap-1.5 overflow-hidden whitespace-nowrap px-3 py-3 text-[14px]"
           >
-            <span className="min-w-0 truncate">See available times</span>
+            <span className="min-w-0 truncate">Book my visit</span>
             {nextSlot && (
               <span className="shrink-0 text-[12.5px] font-semibold opacity-70">&middot; Next: {nextSlot}</span>
             )}

@@ -80,8 +80,18 @@ export default function HomePage() {
     <div className="min-h-screen bg-background pb-[104px] md:pb-0">
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-line">
-        <Image src="/mj/hero-family-soccer.webp" alt="" fill priority className="object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/15" />
+        {/* The photo is busy and bright, so it gets treated rather than just
+            covered: darkened and softly defocused, then a gradient scrim on top.
+            scale-105 hides the blur's soft edge at the crop boundary. */}
+        <Image
+          src="/mj/hero-family-soccer.webp"
+          alt=""
+          fill
+          priority
+          className="scale-105 object-cover object-center"
+          style={{ filter: "brightness(0.74) saturate(1.1) blur(2px)" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/52 to-black/10" />
         {/* Same 3xl column as every step below, so the hero's left edge and the
             step headers' left edge are the same line all the way down. */}
         <div className="container relative mx-auto px-4 py-16 md:py-20">
@@ -89,13 +99,15 @@ export default function HomePage() {
             <h1 className="max-w-[19ch] text-[clamp(30px,4.4vw,46px)] font-extrabold leading-[1.06] tracking-[-0.028em] text-white">
               Get your yard back from mosquitoes, ticks, and fleas
             </h1>
-            <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-white/90">
-              Four questions and a real price, with your first treatment booked at checkout. Not sure of your lot size?
-              We can measure it from your address.
+            <p className="mt-4 text-[17px] leading-relaxed text-white/90">
+              Four questions, a real price, and your first visit booked.
             </p>
-            {/* Desktop only. On mobile the sticky cart bar is the sole CTA. */}
+            {/* Desktop only. On mobile the sticky cart bar is the sole CTA.
+                Scrolls into the configurator rather than skipping it, but wears
+                the same label and availability as the CTA it leads to. */}
             <a href="#step-1" className="btn-yellow mt-7 hidden md:inline-flex">
-              Start my quote
+              <span>Book my visit</span>
+              {nextSlot && <span className="font-semibold opacity-70">&middot; Next: {nextSlot}</span>}
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -310,7 +322,7 @@ export default function HomePage() {
                 disabled={overCap}
                 className="btn-yellow mt-6 hidden w-full py-3.5 text-base md:inline-flex"
               >
-                <span>See available times</span>
+                <span>Book my visit</span>
                 {nextSlot && <span className="font-semibold opacity-70">&middot; Next: {nextSlot}</span>}
                 <ArrowRight className="h-4 w-4" />
               </button>

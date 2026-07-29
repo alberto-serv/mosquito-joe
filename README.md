@@ -46,7 +46,7 @@ standing surface for future attach, not a second sales pitch, so they get no
 shadow, no fill, and no call to action.
 
 On mobile the estimator carries a sticky two-line cart bar instead of inline
-buttons: the live cart on top, "See available times · Next: ..." beneath. It is
+buttons: the live cart on top, "Book my visit · Next: ..." beneath. It is
 present from page load rather than scroll-revealed, so the price is visible from
 the first second and the CTA is reachable at any scroll depth. The hero and
 order-card buttons are desktop-only, so there is exactly one CTA on mobile. The
