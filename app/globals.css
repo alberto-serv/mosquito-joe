@@ -115,6 +115,20 @@
     @apply border-black;
   }
 
+  /* Neighborly — the neutral parent set used on the confirmation screen */
+  .btn-nb {
+    @apply btn bg-nb-blue text-white;
+  }
+  .btn-nb:hover:not(:disabled) {
+    @apply bg-nb-blue-deep;
+  }
+  .btn-nb-ghost {
+    @apply btn border border-nb-blue bg-white text-nb-blue;
+  }
+  .btn-nb-ghost:hover:not(:disabled) {
+    @apply bg-nb-blue-soft;
+  }
+
   /* ── Small type primitives ───────────────────────────────────────── */
   .eyebrow {
     @apply text-[11px] font-bold uppercase tracking-[0.13em] text-mj-slate-soft;
@@ -139,6 +153,13 @@
      weight — so the attach card can match the order above it exactly. */
   .surface {
     @apply rounded-xl border border-line bg-white shadow-card;
+  }
+
+  /* Deliberately lighter than .surface: no shadow, no white fill. Used for the
+     brands available at the address but not purchased, so they read as standing
+     inventory rather than a second sales pitch. */
+  .surface-quiet {
+    @apply rounded-xl border border-line bg-transparent;
   }
 
   .tabular {

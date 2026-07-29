@@ -21,9 +21,7 @@ export function MosquitoJoeMark({ size = "md", className = "" }: { size?: MarkSi
   )
 }
 
-// Lawn Pride's own square mark ships in their logo orange, which collides with
-// the amber barrier layer in the yard plan. Their supplied brand tokens set the
-// accent to #12875E, so the tile follows the token and keeps the letterforms.
+// Lawn Pride's real square mark, from their apple-touch-icon.
 export function LawnPrideMark({
   size = "md",
   muted = false,
@@ -36,15 +34,36 @@ export function LawnPrideMark({
 }) {
   return (
     <span
-      className={`${SIZES[size]} flex shrink-0 items-center justify-center rounded-lg ring-1 ring-line transition-all duration-300 ${className}`}
-      style={{
-        backgroundColor: muted ? "#9CA3AF" : "#12875E",
-        opacity: muted ? 0.55 : 1,
-      }}
-      aria-label="Lawn Pride"
-      role="img"
+      className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line transition-all duration-300 ${className}`}
+      style={{ filter: muted ? "grayscale(1)" : "none", opacity: muted ? 0.5 : 1 }}
     >
-      <span className="text-[13px] font-extrabold leading-none tracking-[-0.04em] text-white">LP</span>
+      <Image src="/brand/lawn-pride-icon.png" alt="Lawn Pride" fill sizes="44px" className="object-cover" />
+    </span>
+  )
+}
+
+// ─── Neighborly and the brands not yet purchased ─────────────────────────────
+
+export function NeighborlyMark({ size = "md", className = "" }: { size?: MarkSize; className?: string }) {
+  return (
+    <span className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line ${className}`}>
+      <Image src="/brand/neighborly-icon.png" alt="Neighborly" fill sizes="44px" className="object-cover" />
+    </span>
+  )
+}
+
+export function WindowGenieMark({ size = "md", className = "" }: { size?: MarkSize; className?: string }) {
+  return (
+    <span className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line ${className}`}>
+      <Image src="/brand/window-genie-icon.png" alt="Window Genie" fill sizes="44px" className="object-cover" />
+    </span>
+  )
+}
+
+export function MrHandymanMark({ size = "md", className = "" }: { size?: MarkSize; className?: string }) {
+  return (
+    <span className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line ${className}`}>
+      <Image src="/brand/mr-handyman-icon.png" alt="Mr. Handyman" fill sizes="44px" className="object-cover" />
     </span>
   )
 }

@@ -54,6 +54,20 @@ const config = {
           orange: "#FF5100",
         },
 
+        // ── Neighborly ────────────────────────────────────────────────
+        // The neutral parent set. Screen 3 runs on this deliberately: the
+        // brands sold the service, the household is the shared asset.
+        nb: {
+          navy: { DEFAULT: "#002554", soft: "#EAEFF5" },
+          blue: { DEFAULT: "#3A73B7", deep: "#2F5F99", soft: "#EDF3FA" },
+          slate: { DEFAULT: "#1F2937", soft: "#6B7280" },
+          yellow: { DEFAULT: "#FFC845", soft: "#FFF6E0" },
+        },
+
+        // ── Brands available at the address, not yet purchased ────────
+        wg: { purple: { DEFAULT: "#500878", soft: "#F4EEF8" }, blue: "#407EC9" },
+        mh: { red: { DEFAULT: "#B52126", soft: "#FBEDED" } },
+
         // ── Shared neutrals ───────────────────────────────────────────
         ink: "#111827",
         body: "#374151",

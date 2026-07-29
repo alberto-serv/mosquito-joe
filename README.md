@@ -1,7 +1,8 @@
 # Mosquito Joe — quote and checkout prototype
 
-A two-screen demo. Screen 1 prices outdoor pest control from the lot size.
+A three-screen demo. Screen 1 prices outdoor pest control from the lot size.
 Screen 2 is the checkout, where a Lawn Pride offer attaches to the same order.
+Screen 3 drops both brands and shows the household itself.
 
 Cloned from `v0-anago-cleaning` and rebuilt: the cleaning estimator became a
 mosquito service quote, and the booking screen became an express checkout with a
@@ -14,7 +15,7 @@ npm install
 npm run dev
 ```
 
-## The two screens
+## The three screens
 
 **`/` — the quote.** Five steps and nothing else: what to treat for, what kind of
 property, how big the lot is, which treatment, and how often. No hero — the first
@@ -30,8 +31,21 @@ visit date and window, contact and address, card entry, then the pay button. The
 pay label follows what actually happens: `Start mosquito service`, or `Start both
 services` once Lawn Pride is added.
 
-`/checkout/confirmation` shows the receipt. `/contact` handles anything that
-needs a person.
+**`/checkout/confirmation` — the household.** Deliberately runs on the neutral
+Neighborly token set, not on either brand's. The brands sold the service; the
+household is the shared asset. It is also the one route excluded from the
+Mosquito Joe chrome in `components/site-chrome.tsx`, because an MJ header on top
+would undo exactly that shift.
+
+The header is the address, not an order number. `<YardPlan coverage="both" />`
+is centered as the hero, then two service cards, then a single payment row and a
+single contact row shared by both. It closes on a visually lighter card,
+"Available at this address", carrying Window Genie and Mr. Handyman with real
+starting prices rather than a "learn more" link. Those are proof the address is a
+standing surface for future attach, not a second sales pitch, so they get no
+shadow, no fill, and no call to action.
+
+`/contact` handles anything that needs a person.
 
 ## The attach card
 
@@ -72,20 +86,25 @@ Two palettes, one typeface. Inter carries both brands; 8px radius throughout.
 
 - Mosquito Joe: yellow `#FBE122` with black text, green `#43B02A`, slate `#374151`
 - Lawn Pride: green `#12875E` with white text, navy `#1B3554`
+- Neighborly (screen 3 only): navy `#002554`, blue `#3A73B7`, yellow `#FFC845`
+- Window Genie: purple `#500878` · Mr. Handyman: red `#B52126`
 - Barrier accent: amber `#F0A81E` — over-cap and minimum notices, warm enough to
   sit beside MJ yellow without competing with Lawn Pride's green
 
-Brand marks and photography live in `public/brand` and `public/mj`.
+Every brand mark in `public/brand` is the real apple-touch-icon or logo pulled
+from that brand's site. Photography lives in `public/mj`.
 
 ## Layout
 
 ```
 app/page.tsx                        screen 1, the quote
 app/checkout/page.tsx               screen 2, the checkout
-app/checkout/confirmation/page.tsx  the receipt
+app/checkout/confirmation/page.tsx  screen 3, the household
+components/yard-plan.tsx            the layered property plan (screen 3 only)
 components/lawn-pride-attach.tsx    the attach card
 components/animated-total.tsx       the counting total
 components/brand-mark.tsx           the two brand marks
 lib/mosquito-data.ts                quote model and pricing
 lib/lawn-pride.ts                   attach offer and pricing
+lib/neighborly-brands.ts            brands available at the address
 ```

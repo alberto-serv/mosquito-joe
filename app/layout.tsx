@@ -15,7 +15,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mosquito-joe.vercel.app"),
-  title: "Mosquito Joe — Outdoor Pest Control Quote",
+  title: "Mosquito Joe · Outdoor Pest Control Quote",
   description:
     "Get an instant quote for mosquito, tick, and flea control. Barrier treatments on a 21-day cycle, season-long protection, and a yard measured from your address.",
   icons: {
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     apple: "/brand/favicon.png",
   },
   openGraph: {
-    title: "Mosquito Joe — Outdoor Pest Control Quote",
+    title: "Mosquito Joe · Outdoor Pest Control Quote",
     description: "Instant pricing for mosquito, tick, and flea control.",
     images: ["/brand/favicon.png"],
   },
