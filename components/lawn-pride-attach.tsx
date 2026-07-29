@@ -1,11 +1,10 @@
 "use client"
 
-import { Switch } from "@/components/ui/switch"
 import { LawnPrideMark, LawnPrideWordmark } from "@/components/brand-mark"
 import { AnimatedTotal } from "@/components/animated-total"
 import { LAWN_PROGRAMS, quoteLawn, type LawnProgramId } from "@/lib/lawn-pride"
 import { usd } from "@/lib/mosquito-data"
-import { Check } from "lucide-react"
+import { Check, Plus, X } from "lucide-react"
 
 // ─── The attach card ─────────────────────────────────────────────────────────
 //
@@ -44,7 +43,7 @@ export function LawnPrideAttach({
         {/* Brand line — same weight as the Mosquito Joe line above it */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <LawnPrideMark size="md" muted={!enabled} />
+            <LawnPrideMark size="md" />
             <div>
               <LawnPrideWordmark className="h-3.5 w-auto" />
               <p className="mt-1 text-[11.5px] font-semibold text-mj-slate-soft">Lawn care, same service area</p>
@@ -55,9 +54,7 @@ export function LawnPrideAttach({
 
         {/* The statement of fact */}
         <div className="mt-5">
-          <h2 className="text-[21px] font-extrabold tracking-[-0.026em] text-black">
-            Your yard is already measured.
-          </h2>
+          <h2 className="text-[21px] font-extrabold tracking-[-0.026em] text-black">Add lawn care services</h2>
           <p className="mt-1.5 text-[15px] leading-relaxed text-body">
             Lawn Pride can treat the same {turfSqft.toLocaleString()} sq ft of turf.
           </p>
@@ -109,39 +106,40 @@ export function LawnPrideAttach({
           </div>
         </fieldset>
 
-        {/* The toggle */}
-        <div
-          className={`mt-5 flex items-center justify-between gap-4 rounded-lg border-2 p-4 transition-all duration-300 ${
-            enabled ? "border-lp-green bg-lp-select" : "border-line bg-muted"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <Switch
-              id="add-lawn-pride"
-              checked={enabled}
-              onCheckedChange={onEnabledChange}
-              className="data-[state=checked]:bg-lp-green"
-            />
-            <label htmlFor="add-lawn-pride" className="cursor-pointer text-[14.5px] font-bold text-black">
-              Add Lawn Pride to this order
-            </label>
-          </div>
-          <div className="shrink-0 text-right">
-            <p className="text-[17px] font-extrabold text-black tabular">
-              <AnimatedTotal value={quote.perApplication} />
-            </p>
-            <p className="text-[11.5px] font-semibold text-mj-slate-soft">
-              per application &middot; {quote.applications} applications
-            </p>
-          </div>
+        {/* The commitment. A button, not a toggle: adding a second brand to the
+            order is an action the customer takes, and it should look like one.
+            Lawn Pride green keeps it clearly secondary to the yellow pay button
+            at the foot of the page. */}
+        <div className="mt-5">
+          {enabled ? (
+            <div className="flex items-center justify-between gap-4 rounded-lg border-2 border-lp-green bg-lp-select p-4">
+              <span className="flex items-center gap-2.5">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lp-green">
+                  <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                </span>
+                <span className="text-[14.5px] font-bold text-black">Added to your order</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => onEnabledChange(false)}
+                className="inline-flex items-center gap-1.5 text-[13px] font-bold text-lp-green-deep underline underline-offset-4 transition-colors hover:text-black"
+              >
+                <X className="h-3.5 w-3.5" />
+                Remove
+              </button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => onEnabledChange(true)} className="btn-lp w-full py-3.5">
+              <Plus className="h-4 w-4" />
+              Add Lawn Pride
+              <span className="font-semibold opacity-80">
+                <AnimatedTotal value={quote.perApplication} /> per application
+              </span>
+            </button>
+          )}
         </div>
 
         <p className="mt-3 text-[13px] text-mj-slate-soft">Same card. Same visit window. One account.</p>
-
-        <p className="mt-4 border-t border-line pt-3 text-[11.5px] leading-relaxed text-mj-slate-soft">
-          Placeholder pricing: $0.011 per sq ft of turf per application, $49 minimum. 7-Application &times;1.0,
-          Enhanced &times;1.28, Enhanced Plus &times;1.55. Billed per application.
-        </p>
       </div>
     </section>
   )

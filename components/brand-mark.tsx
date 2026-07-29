@@ -21,22 +21,11 @@ export function MosquitoJoeMark({ size = "md", className = "" }: { size?: MarkSi
   )
 }
 
-// Lawn Pride's real square mark, from their apple-touch-icon.
-export function LawnPrideMark({
-  size = "md",
-  muted = false,
-  className = "",
-}: {
-  size?: MarkSize
-  /** Sits back until the offer is accepted. */
-  muted?: boolean
-  className?: string
-}) {
+// Lawn Pride's real square mark, from their apple-touch-icon. Always full
+// colour: a brand mark greyed out reads as unavailable, not as un-purchased.
+export function LawnPrideMark({ size = "md", className = "" }: { size?: MarkSize; className?: string }) {
   return (
-    <span
-      className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line transition-all duration-300 ${className}`}
-      style={{ filter: muted ? "grayscale(1)" : "none", opacity: muted ? 0.5 : 1 }}
-    >
+    <span className={`${SIZES[size]} relative shrink-0 overflow-hidden rounded-lg ring-1 ring-line ${className}`}>
       <Image src="/brand/lawn-pride-icon.png" alt="Lawn Pride" fill sizes="44px" className="object-cover" />
     </span>
   )
